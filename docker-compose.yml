@@ -1,0 +1,32 @@
+version: '3.3' 
+
+services: 
+  deluge: 
+    container_name: deluge 
+    image: linuxserver/deluge:amd64-latest
+    #image: linuxserver/deluge:arm32v7-5b398f77-ls22 
+    #image: linuxserver/deluge:arm64v8-5b398f77-ls22 
+    restart: always 
+    environment: 
+      - PUID=0 
+      - PGID=0 
+    volumes: 
+      - /storage/media/Video:/downloads 
+      - /storage/media/Torrents:/torrents 
+      - /storage/media/.incompleted:/incompleted 
+      - ./deluge/config:/config 
+    network_mode: host
+
+  minidlna: 
+    container_name: minidlna 
+    image: vladgh/minidlna 
+    restart: always 
+    volumes: 
+      - /storage/media/Video:/media:ro 
+    environment: 
+      - MINIDLNA_MEDIA_DIR=V,/media
+      - MINIDLNA_FRIENDLY_NAME=MnB_Home 
+      - MINIDLNA_MERGE_MEDIA_DIRS=yes 
+      - MINIDLNA_FORCE_SORT_CRITERIA=upnp:class, upnp:originalTrackNumber, dc:title 
+      - MINIDLNA_ROOT_CONTAINER=B 
+    network_mode: host
